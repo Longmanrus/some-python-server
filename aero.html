@@ -1,0 +1,72 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Аэропорт</title>
+        <meta charset='utf-8' />
+    </head>
+    <body>
+        <canvas id='example'>Обновите браузер</canvas>
+        <script>
+		var h = 650; //Высота канваса
+		var w = 1200; //Ширина канваса
+		var ctx; 
+		var pi = Math.PI; // PI
+		var zero_x =80; // координата x левого верхнего угла аэропорта
+		var zero_y =100; // координата y левого верхнего угла аэропорта
+		var plane_x = zero_x+80; //начальная x самолета
+		var plane_y = zero_y+250; // начальная y самолета
+		var gradient;
+
+
+		function draw(){
+			ctx.fillStyle='#2d882d';
+			ctx.fillRect(0,0,w/2,h);
+			ctx.fillStyle='#828a83';
+			ctx.fillRect(zero_x,zero_y,130,500); //
+			ctx.fillRect(zero_x+130,zero_y+70,160,30);
+			ctx.fillRect(zero_x+130,zero_y+240,160,30);
+			ctx.fillRect(zero_x+130,zero_y+390,160,30);
+			ctx.fillRect(zero_x+190,zero_y-70,160,30);
+			ctx.fillRect(zero_x+190,zero_y+480,160,30);
+			ctx.fillRect(zero_x+190,zero_y-70,35,570);
+			ctx.fillRect(zero_x+290,zero_y-80,80,600); // взлетная полоса
+			ctx.strokeStyle=gradient;
+			ctx.lineWidth=2;
+			ctx.strokeRect(zero_x+330,zero_y-65,2,575);
+			ctx.fillStyle='#0c1371';
+			ctx.fillRect(zero_x+10,zero_y+20,50,450);// терминал
+			ctx.fillRect(zero_x+60,zero_y+70,30,10); // посадочный 1
+			ctx.fillRect(zero_x+60,zero_y+230,30,10); // посадочный 2
+			ctx.fillRect(zero_x+60,zero_y+380,30,10); // посадочный 3
+			ctx.fillStyle='white';
+			ctx.fillRect(plane_x,plane_y,40,12); //самолет
+			ctx.fillRect(plane_x+20,plane_y-7,8,26); 
+		}
+
+		function update(){
+			var t=0;
+			t++
+			plane_x = plane_x+t;
+			draw()
+
+			}
+
+		window.onload=function(){
+		var canvas =document.getElementById('example');
+		ctx = canvas.getContext('2d');
+		gradient=ctx.createLinearGradient(zero_x+330,zero_y-65,zero_x+330,610);
+		for (i=0;i<1;i+=0.05){
+			gradient.addColorStop(i,"#FFff00");
+			gradient.addColorStop(i+0.0249,"#ffff00");
+			gradient.addColorStop(i+0.025,"#828a83");
+			gradient.addColorStop(i+0.0499,"#828a83");
+			}
+		canvas.height=h;
+		canvas.width=w;
+		setInterval(update, 35);
+
+	}
+
+        </script><span id='data'></span>
+	</body>
+</html>

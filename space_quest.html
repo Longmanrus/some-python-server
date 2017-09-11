@@ -1,0 +1,217 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Space Quest</title>
+        <meta charset='utf-8' />
+    </head>
+    <body>
+        <canvas id='example'>Обновите браузер</canvas>
+        <script>
+var key=[0,0,0,0,0];
+var h = 650; //height
+var w = 1200; //width
+var centerX;
+var centerY;
+var pi = Math.PI;
+var posd_x;
+var posf_x;
+var posd_y;
+var posf_y;
+var posr_x;
+var posr_y;
+var radd;
+var radf;
+var veld = [0.05,-0.23];
+var velf = [0,-0.25];
+var velr = [-0,-0];
+var ele; 
+var thrust=0;
+var toff=34;
+var angoff = 0;
+var tstart=-1;
+var ctx;	
+var t=0;
+var ang_r = (posr_x==centerX)?pi/2:Math.atan((posr_y-centerY)/(posr_x-centerX));
+
+function draw(){
+	ctx.beginPath();
+	ctx.fillStyle='black';
+	ctx.fillRect(0, 0, w, h);
+	ctx.fillStyle = '#ff4c00';
+    ctx.arc(centerX, centerY, 50, 0,  2 * pi,  false);
+   	ctx.fill();
+   	ctx.lineWidth = 5;
+    ctx.strokeStyle = '#ff9400';
+    ctx.stroke();
+   	ctx.closePath();
+   	ctx.beginPath();
+   	ctx.fillStyle = 'grey';
+   	ctx.arc(posd_x, posd_y, 5, 0,  2 * pi,  false);
+   	ctx.fill();
+   	ctx.beginPath();
+   	ctx.fillStyle = 'brown';
+   	ctx.arc(posf_x, posf_y, 8, 0,  2 * pi,  false);
+   	ctx.fill();
+   	ctx.fillStyle = 'white';
+   	ctx.fillText('DEIMOS', posd_x+10, posd_y+5);
+   	ctx.fillStyle = 'white';
+   	ctx.fillText('PHOBOS', posf_x+10, posf_y+5);
+   	ctx.fillStyle='black';
+   	ctx.fillText('MARS', centerX-25, centerY);
+   	if (t-tstart<toff || tstart==-1){
+   		draw_angle();
+   		draw_accel();
+   		ctx.fillStyle='red';
+   	}
+   	else 
+   		ctx.fillStyle='blue'
+   	ctx.fillRect(posr_x,posr_y,3,5);
+   	ctx.fillStyle = 'white';
+   	ctx.fillText('ROCKET', posr_x+10, posr_y+5);
+
+
+}
+function draw_angle(){
+   	ctx.strokeStyle='green';
+   	ctx.save()
+   	ctx.translate(centerX,centerY-50)
+   	ctx.rotate(pi/2-angoff)
+   	ctx.beginPath();
+   	ctx.lineWidth=1;
+   	ctx.moveTo(0,0)
+   	ctx.lineTo(0,-100)
+   	ctx.stroke();
+   	ctx.restore();
+}
+
+function draw_accel(){
+	if (toff>=34){
+   	ctx.fillStyle='#4dde00';
+	ctx.fillRect(w-75,h-50,40,40);
+	}
+	if (toff>=38)
+	ctx.fillRect(w-75,h-100,40,40);
+	if (toff>=42){
+	ctx.fillStyle='#fbfe00';
+	ctx.fillRect(w-75,h-150,40,40);
+	}
+	if (toff>=46){
+	ctx.fillStyle='#ffb400';
+	ctx.fillRect(w-75,h-200,40,40);
+	}
+	if (toff>=50){
+	ctx.fillStyle='#ff0000';
+	ctx.fillRect(w-75,h-250,40,40);
+	}
+}
+
+function rocket(){
+	var theta = Math.atan((posr_y-centerY)/(posr_x-centerX));
+	
+
+	if (t-tstart<toff && tstart>-1){
+		ang_r = -pi/2 + (t-tstart)*(pi/2-angoff)/toff;
+		thrust=ge(40)+0.01
+	}else{
+		thrust=0;
+	}
+	
+
+	radr=Math.sqrt((centerX-posr_x)*(centerX-posr_x)+(centerY-posr_y)*(centerY-posr_y));
+	if (key[4]){
+		if (tstart==-1)
+			tstart=t;
+	
+		if (posr_x<centerX){
+			velr[0]+=Math.cos(theta)*ge(radr);
+			velr[1]+=Math.sin(theta)*ge(radr);
+		}else{
+			velr[0]-=Math.cos(theta)*ge(radr);
+			velr[1]-=Math.sin(theta)*ge(radr);
+		}
+		
+		velr[0]+=thrust*Math.cos(ang_r);
+		velr[1]+=thrust*Math.sin(ang_r);
+		posr_x+=velr[0];
+		posr_y+=velr[1];
+	}
+
+}
+
+function ge (v){
+	return 10/(v*v)
+}
+
+function update(){
+	t++
+	var alpha = Math.atan((posd_y-centerY)/(posd_x-centerX));
+	radd=Math.sqrt((centerX-posd_x)*(centerX-posd_x)+(centerY-posd_y)*(centerY-posd_y));
+	if (posd_x<centerX){
+		veld[0]+=Math.cos(alpha)*ge(radd);
+		veld[1]+=Math.sin(alpha)*ge(radd);
+	}else{
+		veld[0]-=Math.cos(alpha)*ge(radd);
+		veld[1]-=Math.sin(alpha)*ge(radd);
+	}
+
+	posd_x+=veld[0];
+	posd_y+=veld[1];
+	
+	var beta = Math.atan((posf_y-centerY)/(posf_x-centerX));
+		radf=Math.sqrt((centerX-posf_x)*(centerX-posf_x)+(centerY-posf_y)*(centerY-posf_y));
+	if (posf_x<centerX){
+		velf[0]+=Math.cos(beta)*ge(radf);
+		velf[1]+=Math.sin(beta)*ge(radf);
+	}else{
+		velf[0]-=Math.cos(beta)*ge(radf);
+		velf[1]-=Math.sin(beta)*ge(radf);
+	}
+	posf_x+=velf[0];
+	posf_y+=velf[1];
+	rocket();
+	draw()
+	
+}
+document.addEventListener('keydown', changeKey)
+
+window.onload=function(){
+	var canvas =document.getElementById('example')
+	canvas.height=h;
+	canvas.width=w;
+	ctx = canvas.getContext('2d');
+	centerX = canvas.width / 2
+	centerY = canvas.height / 2
+	posd_x = centerX-200;
+	posf_x = centerX+160;
+	posf_y = centerY+120;
+	posd_y = centerY;
+	posr_x = centerX;
+	posr_y = centerY-52;
+	ele = document.getElementById("debug");
+	setInterval(update, 35);
+
+	}
+
+function changeKey(which){
+	switch (which.keyCode){
+		case 32: key[4]=1; 
+		break; // space bar;
+		case 65: case 37:
+		angoff+=pi/100; 
+		break; // left
+		case 68: case 39: 
+		angoff-=pi/100; 
+		break; // right
+		case 87: case 38:
+		//ele.innerHTML=Math.round(posf_x)+':'+Math.round(posf_y)+':'+toff;
+		if (toff<50) (toff++); 
+		break; // up
+		case 83: case 40: 
+		if (toff>30) (toff--); 
+		break;// down
+	}
+}
+			</script>
+		<span id='debug'></span> Кнопки право и лево - угол запуска<br> Вверх, вниз - количество топлива (рекомендуется держать на желтом уровне)<br> Пробел - запуск ракеты.
+	</body>
+</html>

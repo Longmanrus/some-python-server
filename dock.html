@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head> <meta charset='UTF-8'></head>
+<body onload=init()>
+<script>
+var img;
+var ctx;
+var pi=Math.PI;
+var crane1_angle=0;
+var crane2_angle=0;
+var big_crane=[0,0];
+var shipPos = 0;
+var shipVel=0.5;
+var shipState=0;
+fps=25;
+var crane1_task=0;
+
+
+function init(){
+	cnv=document.getElementById("canvas");
+	cnv.width=400;
+	cnv.height=400;
+	ctx=cnv.getContext("2d");
+	img = new Image();
+	img.src = 'car_parking.png';
+	img.style.position = 'absolute';
+	img.style.left = '0px';
+	setInterval(refresh,1000/fps);
+	setInterval(ship_machine,50);
+	setInterval(crane1_machine,50);
+}
+
+var shipSignal=0, newShip=0;
+
+function ship_machine(){
+	switch (shipState){
+		case 0:
+		shipPos+=shipVel;
+		if (shipPos>153) {
+			shipPos=153;
+			crane1_task=1;
+			shipState=1;
+		}
+		break;
+		case 1:
+		if (shipSignal) {
+			shipState=2;
+			shipSignal=0;
+		}
+		break;
+		case 2:
+		shipPos+=shipVel;
+		if (shipPos>550){
+			shipState=3;
+
+		}
+		break;
+		case 3:
+		if (newShip){
+			shipState=0;
+			shipPos=0;
+			newShip=0;
+		}
+		break;
+	}
+ document.getElementById("debug").innerHTML=crane1_state+":"+crane1_task;
+}
+function refresh(){
+	ctx.fillStyle="#400";
+	ctx.fillRect(0,0,60,400);
+	ctx.fillStyle="#555";
+	ctx.fillRect(60,0,240,400);
+	ctx.fillStyle="#44f";
+	ctx.fillRect(300,0,100,400);
+
+	ctx.drawImage(img, 60, 300);
+	ctx.save();
+	ctx.fillStyle='#c30'
+	ctx.translate(305,400-shipPos);
+	ctx.fillRect(0,0,25,150);
+	ctx.restore();
+
+	
+	ctx.save();
+	ctx.fillStyle="#0f0";
+	ctx.translate(290,310);
+	ctx.rotate(crane1_angle);
+	ctx.fillRect(0,0,5,50);
+	ctx.restore();
+
+	ctx.save();
+	ctx.fillStyle="#0f0";
+	ctx.translate(180,290);
+	ctx.rotate(crane2_angle);
+	ctx.fillRect(0,0,5,50);
+	ctx.restore();
+
+	ctx.save();
+	ctx.fillStyle="#0f0";
+	ctx.translate(5,5+big_crane[1]);
+	ctx.save();
+	ctx.fillStyle='#ff0';
+	ctx.translate(big_crane[0],-1)
+	ctx.fillRect(0,0,9,9);
+	ctx.restore();
+	ctx.fillRect(0,0,310,7);
+	ctx.restore();
+}
+
+var crane1_state=8; 
+var crane1_load=0;
+function crane1_machine(){
+	var crane1_vel=0.2;
+	switch (crane1_state){
+		case 0:
+		crane1_angle-=crane1_vel;
+		if (crane1_angle<-pi/2){
+			crane1_angle=-pi/2;
+			crane1_state=1;
+		}
+		break;
+		case 1:
+		crane1_load++;
+		if (crane1_load==50){
+			crane1_state=2;
+		}
+		break;
+		case 2:
+		crane1_angle+=crane1_vel;
+		if (crane1_angle>2*pi/3){
+			crane1_angle=2*pi/3;
+			crane1_state=3;
+		}
+		break;
+		case 3:
+		crane1_load--;
+		if (crane1_load==0) {
+			crane1_state=8;
+			crane1_task=0;
+		}
+		break;
+		case 4:
+		crane1_load++;
+		if (crane1_load==50){
+			crane1_state=5;
+		}
+		break;
+		case 5:
+		crane1_angle-=crane1_vel;
+		if (crane1_angle<-pi/2){
+			crane1_angle=-pi/2;
+			crane1_state=6;
+		}
+		break;
+		case 6:
+		crane1_load--;
+		if (crane1_load==0) {
+			crane1_state=8;
+			crane1_task=0;
+		}
+		break;
+		case 7:
+		crane1_angle+=crane1_vel;
+		if (crane1_angle>2*pi/3){
+			crane1_angle=2*pi/3;
+			crane1_state=4;
+		}
+		break;
+		case 8:
+		if (crane1_task==1){
+			crane1_state=0;
+
+		}
+		if (crane1_task==2){
+			crane1_state=7;
+
+		}
+		break;
+	}
+}
+</script>
+<canvas id="canvas">no canvas supported in this browser</canvas>
+<br><span id="debug"></span><br>
+<button onclick='shipSignal=1'>Отпустить</button>
+<button onclick='newShip=1'>вызов нового корабля</button>
+</body>
+</html>

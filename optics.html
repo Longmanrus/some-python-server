@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+    <head>
+        <title>center mass</title>
+        <meta charset='utf-8' />
+    </head>
+      <body>
+        <input type="text" id="width" placeholder="Ширина корабля"><br>
+        <input type="text" id="height" placeholder="Высота ватерлинии"><br>
+        <input type="text" id="angle" placeholder="Угол крена"><br>
+        <input type="text" id="input_hcm" placeholder="Высота Ц.Т."><br>
+        <input type="button" onclick = "main()" value="Посчитать"><br>
+        <script>
+        var w;
+        var h; 
+        var alpha;
+        var amax;
+        var hm;
+        var hcm;
+
+        function main (){
+          w = document.getElementById("width").value;
+          h = document.getElementById("height").value;
+          alpha = document.getElementById("angle").value;
+          hcm = document.getElementById("input_hcm").value;
+          amax= Math.atan(2*h/w)*180/Math.PI;
+          if (alpha<amax){
+          t = (w/3) * (3*h+Math.tan(alpha*Math.PI/180)*w/2)/(2*h)
+          n = (h-w*Math.tan(alpha*Math.PI/180)/2)/Math.tan(alpha*Math.PI/180);
+          c = (n+t)*Math.tan(alpha*Math.PI/180);
+          hm = (t-5)/Math.tan(alpha*Math.PI/180)+c-hcm;
+          }else{
+                    window.alert("Максимальный угол крена - "+Math.floor(amax*10)/10)
+                  }
+
+          document.getElementById("debug").innerHTML = "От средней линии до центра плавучести: "+Math.floor((t-5)*1000)/1000+"<br>От киля до центра плавучести: "+Math.floor(c*1000)/1000+"<br>Метацентрическая высота: "+Math.floor(hm*1000)/1000;
+
+        }
+
+        </script>
+        <span id='debug'></span>
+    	</body>
+    </html>

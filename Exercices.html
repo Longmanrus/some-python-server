@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head> <meta charset='UTF-8'></head>
+<body onload="init()" style="margin:0">
+	<script>
+	function init() {
+		document.addEventListener("scroll",bind);
+	}
+	function bind(){
+		document.getElementsByClassName("head1")[0].style.top=window.pageYOffset+'px';
+		console.log(window.pageYOffset)
+	}
+	</script>
+<style type="text/css">
+.head1 {
+	background-color: #412629;
+	width: 1263px;
+	height: 80px;
+	color: #1DC214;
+	font-family: sans-serif;
+	font-size: 300%;
+	position: absolute;
+}
+.ue {
+	background-color: yellow;
+	width: 631px;
+	padding-top: 80px;
+	height:360px;
+}
+.de {
+	background-color: red;
+	width: 631px;
+	height: 360px;
+}
+.uw {
+	background-color: green;
+	width: 632px;
+	height: 360px;
+	padding-left: 632px;
+	
+} 
+
+
+</style>
+<div class="head1">blabla</div>
+<div class="ue">tutturu</div>
+<div class="de">rerwer</div>
+<div class="uw">dsdsdxc</div>
+<div class="dw">dsdvzv</div>
+</body>
+</html>

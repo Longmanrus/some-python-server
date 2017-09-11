@@ -1,0 +1,5 @@
+MOV A,R0
+mov A,R7
+MOV A,R1
+MOV A,R5
+MOV A,R3

@@ -1,0 +1,57 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Rogue King</title>
+        <meta charset='utf-8' />
+    </head>
+    <body>
+        <canvas id='example'>Обновите браузер</canvas>
+        <script>
+            var example = document.getElementById("example"),
+			    ctx     = example.getContext('2d');
+			    square_side       = 59.4 ;
+            example.width  = 640;
+            example.height = 640;
+            function build_map(){
+	            ctx.strokeRect(15, 15, 606, 606);
+	            ctx.strokeRect(18, 18, 600, 600);
+	            ctx.fillStyle='black';
+	            ctx.fillRect(21, 21, square_side*10 , square_side*10 );
+	            ctx.strokeStyle='white';
+	            ctx.beginPath();
+	            for (i=1; i<10; i++) {
+	            	ctx.moveTo(21+i*square_side, 21);
+	            	ctx.lineTo(21+i*square_side, 615);
+	            	ctx.moveTo(21, 21+i*square_side);
+	            	ctx.lineTo(615, 21+i*square_side);
+	            } 
+	            ctx.stroke();
+	            ctx.closePath();
+	        }
+            var monster_cap = 5, x = Array(), y = Array();
+            for (i=0; i<monster_cap; i++) {
+            	x[i] = 0;
+            	y[i] = 0;
+            }
+            setInterval(move,1000);
+            function move(){
+            	build_map();
+            	ctx.fillStyle = 'red';
+            	for (i=0; i<monster_cap; i++) {
+	            	x[i]= x[i]+Math.floor(Math.random()*3)-1;
+	            	y[i]= y[i]+Math.floor(Math.random()*3)-1;
+	            	if (x[i]<0) x[i]=0;
+	            	if (x[i]>9) x[i]=9;
+	            	if (y[i]<0) y[i]=0;
+	            	if (y[i]>9) y[i]=9;
+			       	ctx.fillRect(21+x[i]*square_side,21+y[i]*square_side,square_side,square_side);
+		       }
+
+		       	document.getElementById('debug').innerHTML='debug:'+'<br>'+x+'<br>'+y;
+            }
+
+                
+        </script>
+
+   <div style="position:absolute;left:700px;top:100px;" id="debug">123</div> </body>
+</html>
